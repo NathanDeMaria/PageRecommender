@@ -1,0 +1,15 @@
+.main {
+	width: 100px;
+}
+
+#good-button {
+	float: left;
+}
+
+#bad-button {
+	float: right;
+}
+
+.button {
+	padding-bottom: 7px;
+}

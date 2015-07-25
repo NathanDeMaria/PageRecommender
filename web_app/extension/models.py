@@ -7,5 +7,5 @@ class Article(models.Model):
         ('D', 'dislike')
     )
     url = models.CharField(max_length=100)
-    access_time = models.DateField()
+    access_time = models.DateTimeField()
     response = models.CharField(max_length=1, choices=RESPONSES)

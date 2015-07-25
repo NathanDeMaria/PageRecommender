@@ -3,7 +3,7 @@
   "version" : "0.1",
   "description" : "Mark pages as like/dislike to form recommendations.",
   "permissions": [
-    "activeTab"
+    "tabs"
   ],
   "browser_action": {
      "default_icon": "logo.png",

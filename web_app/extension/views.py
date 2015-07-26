@@ -16,7 +16,7 @@ def add(request):
     else:
         raise ValueError("Unrecognized response")
 
-    a = Article(url=request.POST['url'], access_time=datetime.now(), response=response)
+    a = Article(url=request.POST['url'], access_time=datetime.utcnow(), response=response)
     a.save()
 
     return render(request, "rated.html")

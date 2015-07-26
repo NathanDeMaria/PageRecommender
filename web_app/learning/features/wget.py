@@ -14,7 +14,7 @@ def smart_wget(url):
     :param url: URL of article to get text for
     :return: page data for the given URL
     """
-    safe_filename = filter(str.isalnum, str(url))
+    safe_filename = '{0}.pickle'.format(filter(str.isalnum, str(url)))
     safe_file = os.path.join(PICKLE_DIR, safe_filename)
 
     page_data = _read_pickle(safe_file)

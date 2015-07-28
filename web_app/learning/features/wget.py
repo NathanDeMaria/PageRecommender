@@ -1,6 +1,6 @@
 import os
 import pickle
-from urllib2 import urlopen
+from urllib2 import Request, urlopen
 
 
 PICKLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pickles')
@@ -21,7 +21,10 @@ def smart_wget(url):
     if page_data is not None:
         return page_data
 
-    response = urlopen(url)
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) '
+                                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                                              'Chrome/44.0.2403.107 Safari/537.36'})
+    response = urlopen(req)
     page_data = response.read()
 
     _save_pickle(safe_file, page_data)

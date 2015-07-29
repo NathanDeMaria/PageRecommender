@@ -9,6 +9,10 @@ def create_data(feature_functions):
     :param feature_functions: list of functions to apply to rows of the data
     :return: list of article dicts, with features included
     """
+    import os
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "web_app.settings")
+    from extension.models import Article
+    
     articles = Article.objects.all()
 
     for feature in feature_functions:
@@ -31,8 +35,5 @@ def to_dict(article):
 
 
 if __name__ == '__main__':
-    import os
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "web_app.settings")
-    from extension.models import Article
     feature_generators = [to_dict, add_text]
     print list(create_data(feature_generators))

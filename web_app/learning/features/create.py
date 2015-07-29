@@ -12,12 +12,20 @@ def create_data(feature_functions):
     import os
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "web_app.settings")
     from extension.models import Article
-    
-    articles = Article.objects.all()
 
+    articles = Article.objects.all()
+    return add_features(feature_functions, articles)
+
+
+def add_features(feature_functions, articles):
+    """
+    Adds features to each article based on feature functions
+    :param feature_functions: list of functions to apply to rows of the data
+    :param articles: list of articles to add features to
+    :return: articles with added features
+    """
     for feature in feature_functions:
         articles = imap(feature, articles)
-
     return articles
 
 

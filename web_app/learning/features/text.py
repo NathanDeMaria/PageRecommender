@@ -1,3 +1,5 @@
+from itertools import chain
+from bs4 import BeautifulSoup, NavigableString, Comment
 from wget import smart_wget
 
 
@@ -20,5 +22,28 @@ def _get_text(raw_html):
     :param raw_html: all the raw HTML for a page
     :return: just the text
     """
-    # TODO: actually get the text
-    return raw_html
+    bs = BeautifulSoup(raw_html)
+    text_nodes = bs.find_all(_is_text_tag)
+    text_elements = [_get_child_text(node) for node in text_nodes]
+    return ' '.join(chain(*chain(*text_elements)))
+
+
+def _get_child_text(node):
+    """
+    Get generator of all text children
+    :param node: text-ish node
+    :return: yields all text children
+    """
+    for child in node.children:
+        if isinstance(child, NavigableString) and not isinstance(child, Comment):
+            yield child.split()
+
+
+def _is_text_tag(tag):
+    """
+    Function for filtering BeautifulSoup nodes down to
+    nodes that have "interesting" text
+    :param tag: soup tag
+    :return: True if I care about the text inside this tag
+    """
+    return tag.name not in ['script', 'style']

@@ -50,11 +50,47 @@ def add(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def load(request):
-
+    # Get comparison rating
     url = request.POST['url']
+    content, _ = make_comparisons(url)
+    # Return it as plaintext
+    response = HttpResponse(content_type='text/plain')
+    response.write(str(content))
+    return response
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def inline(request):
+    # Get comparison rating
+    url = request.POST['url']
+    #print 'URL', url
+    content, comparisons = make_comparisons(url)
+    #print 'COMPARISONS', comparisons
+
+    if comparisons is not None:
+        # Make return content
+        if comparisons[0][1] > comparisons[1][1]:
+            content = '(LIKE--{0}%) ::: '.format(round(100. * comparisons[0][1], 2))
+        elif comparisons[0][1] < comparisons[1][1]:
+            content = '(DISLIKE--{0}%) ::: '.format(round(100. * comparisons[1][1], 2))
+        elif comparisons[0][1] == comparisons[1][1]:
+            content = '(NEUTRAL--{0}%) ::: '.format(round(100. * comparisons[0][1], 2))
+        else:
+            raise ValueError('You should never receive this error. If so please send the admin a message saying so...')
+    else:
+        content = '({0}) ::: '.format(content[0:content.rfind(' ')])
+    # Return it
+    response = HttpResponse(content_type='text/plain')
+    response.write(str(content))
+    return response
+
+# Helper function to calculate tdidf
+def make_comparisons(url):
     arts = Article.objects.all()
     if len(arts) == 0:
         content = "Like pages to get started!"
+        comparisons = None
     else:
         url_list = []
         for article in arts:
@@ -63,8 +99,10 @@ def load(request):
         if url in url_list:
             if Article.objects.get(url=url).response == 'L':
                 content = 'ALREADY LIKED (100%)'
+                comparisons = None
             elif Article.objects.get(url=url).response == 'D':
                 content = 'ALREADY DISLIKED (100%)'
+                comparisons = None
             else:
                 raise AttributeError('Somehow we managed to neither like nor dislike this webpage.')
         # What to do if we haven't
@@ -88,7 +126,6 @@ def load(request):
             table.addDocument('dislikes', bodies_dislike_words)
             compare_text = get_html_text(url)
             comparisons = table.similarities(compare_text)
-            print comparisons, '\n'
             if comparisons[0][1] > comparisons[1][1]:
                 content = 'LIKE ({0}% Certain)'.format(round(100. * comparisons[0][1], 2))
             elif comparisons[0][1] < comparisons[1][1]:
@@ -101,10 +138,7 @@ def load(request):
         else:
             raise LookupError("This URL both does not exists in the database and does not, not exist in the database."
                               "Might be time to fall into a solipsistic coma and hope Apocalypse Now isn't real.")
-
-    response = HttpResponse(content_type='text/plain')
-    response.write(str(content))
-    return response
+    return content, comparisons
 
 
 # Helper function used to cut down HTML text to readable portions

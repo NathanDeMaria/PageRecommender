@@ -13,5 +13,11 @@
      "default_icon": "logo.png",
      "default_popup": "recommender.html"
   },
+  "content_scripts": [
+    {
+      "matches": ["http://www.datatau.com/", "https://www.datatau.com/"], //"css": ["mystyles.css"],
+      "js": ["jquery-2.1.4.min.js", "inline.js"]
+    }
+  ],
   "manifest_version": 2
 }

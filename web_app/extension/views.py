@@ -79,7 +79,10 @@ def inline(request):
         else:
             raise ValueError('You should never receive this error. If so please send the admin a message saying so...')
     else:
-        content = '({0}) ::: '.format(content[0:content.rfind(' ')])
+        if content == "Like pages to get started!":
+            content = '(NEUTRAL (NO LIKES)'
+        else:
+            content = '({0}) ::: '.format(content[0:content.rfind(' ')])
     # Return it
     response = HttpResponse(content_type='text/plain')
     response.write(str(content))

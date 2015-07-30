@@ -15,7 +15,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://www.datatau.com/", "https://www.datatau.com/"], //"css": ["mystyles.css"],
+      "matches": ["http://www.datatau.com/*", "https://www.datatau.com/*"], //"css": ["mystyles.css"],
       "js": ["jquery-2.1.4.min.js", "inline.js"]
     }
   ],

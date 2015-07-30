@@ -1,6 +1,8 @@
 __pychache__/
 *.py[cod]
 
+*.DS_Store
+
 *.sqlite3
 *.pickle
 

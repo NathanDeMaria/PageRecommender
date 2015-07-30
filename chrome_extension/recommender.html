@@ -8,8 +8,11 @@
   </head>
   <body>
     <div role="main" class="main">
-        <div id="percent-div">
-            <h3 id="percent-val">Why are you seeing this?...Go away.</h3>
+        <span id="percent-div">
+            <h3 id="percent-val" style="text-align:center;margin:0;">Loading...</h3>
+            <div id="loading-div">
+                <img src="loading.gif" alt="Loading Bar" style="width:100%;padding-bottom:2px;" id="loading-gif">
+            </div>
         </div>
         <div id="form-div">
           <form action="http://127.0.0.1:8000/extension/add" method="POST">

@@ -56,15 +56,16 @@ def load(request):
     if len(arts) == 0:
         content = "Like pages to get started!"
     else:
-        art_text = get_html_text(request.POST['url'])
         bodies_like = ''
         bodies_dislike = ''
         # Grab likes and dislikes
         for article in arts:
             if article.response == 'L':
-                bodies_like += ' ' + str(article.body_text)
+                bodies_like += ' '
+                bodies_like += str((unidecode(article.body_text)))
             elif article.response == 'D':
-                bodies_dislike += ' ' + str(article.body_text)
+                bodies_dislike += ' '
+                bodies_dislike += str(unidecode(article.body_text))
             else:
                 raise ValueError('Unknown rating encountered. Contact admin to reset database.')
         bodies_like_words = bodies_like.split()
@@ -74,6 +75,7 @@ def load(request):
         table.addDocument('dislikes', bodies_dislike_words)
         compare_text = get_html_text(url)
         comparisons = table.similarities(compare_text)
+        print comparisons, '\n'
         if comparisons[0][1] > comparisons[1][1]:
             content = 'LIKE ({0}% Certain)'.format(round(100. * comparisons[0][1], 2))
         elif comparisons[0][1] < comparisons[1][1]:

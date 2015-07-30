@@ -56,34 +56,51 @@ def load(request):
     if len(arts) == 0:
         content = "Like pages to get started!"
     else:
-        bodies_like = ''
-        bodies_dislike = ''
-        # Grab likes and dislikes
+        url_list = []
         for article in arts:
-            if article.response == 'L':
-                bodies_like += ' '
-                bodies_like += str((unidecode(article.body_text)))
-            elif article.response == 'D':
-                bodies_dislike += ' '
-                bodies_dislike += str(unidecode(article.body_text))
+            url_list.append(article.url)
+        # Check if we have already liked/disliked it
+        if url in url_list:
+            if Article.objects.get(url=url).response == 'L':
+                content = 'ALREADY LIKED (100%)'
+            elif Article.objects.get(url=url).response == 'D':
+                content = 'ALREADY DISLIKED (100%)'
             else:
-                raise ValueError('Unknown rating encountered. Contact admin to reset database.')
-        bodies_like_words = bodies_like.split()
-        bodies_dislike_words = bodies_dislike.split()
-        table = tfidf.tfidf()
-        table.addDocument('likes', bodies_like_words)
-        table.addDocument('dislikes', bodies_dislike_words)
-        compare_text = get_html_text(url)
-        comparisons = table.similarities(compare_text)
-        print comparisons, '\n'
-        if comparisons[0][1] > comparisons[1][1]:
-            content = 'LIKE ({0}% Certain)'.format(round(100. * comparisons[0][1], 2))
-        elif comparisons[0][1] < comparisons[1][1]:
-            content = 'DISLIKE ({0}% Certain)'.format(round(100. * comparisons[1][1], 2))
-        elif comparisons[0][1] == comparisons[1][1]:
-            content = 'NEUTRAL ({0}% Certain)'.format(round(100. * comparisons[0][1], 2))
+                raise AttributeError('Somehow we managed to neither like nor dislike this webpage.')
+        # What to do if we haven't
+        elif url not in url_list:
+            bodies_like = ''
+            bodies_dislike = ''
+            # Grab likes and dislikes
+            for article in arts:
+                if article.response == 'L':
+                    bodies_like += ' '
+                    bodies_like += str((unidecode(article.body_text)))
+                elif article.response == 'D':
+                    bodies_dislike += ' '
+                    bodies_dislike += str(unidecode(article.body_text))
+                else:
+                    raise ValueError('Unknown rating encountered. Contact admin to reset database.')
+            bodies_like_words = bodies_like.split()
+            bodies_dislike_words = bodies_dislike.split()
+            table = tfidf.tfidf()
+            table.addDocument('likes', bodies_like_words)
+            table.addDocument('dislikes', bodies_dislike_words)
+            compare_text = get_html_text(url)
+            comparisons = table.similarities(compare_text)
+            print comparisons, '\n'
+            if comparisons[0][1] > comparisons[1][1]:
+                content = 'LIKE ({0}% Certain)'.format(round(100. * comparisons[0][1], 2))
+            elif comparisons[0][1] < comparisons[1][1]:
+                content = 'DISLIKE ({0}% Certain)'.format(round(100. * comparisons[1][1], 2))
+            elif comparisons[0][1] == comparisons[1][1]:
+                content = 'NEUTRAL ({0}% Certain)'.format(round(100. * comparisons[0][1], 2))
+            else:
+                raise ValueError('You should never receive this error. If so please send the admin a message saying so...')
+        # 'How did you get here?' Error
         else:
-            raise ValueError('You should never receive this error. If so please send the admin a message saying so...')
+            raise LookupError("This URL both does not exists in the database and does not, not exist in the database."
+                              "Might be time to fall into a solipsistic coma and hope Apocalypse Now isn't real.")
 
     response = HttpResponse(content_type='text/plain')
     response.write(str(content))

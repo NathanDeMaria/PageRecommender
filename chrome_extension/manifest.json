@@ -3,11 +3,28 @@
   "version" : "0.1",
   "description" : "Mark pages as like/dislike to form recommendations.",
   "permissions": [
-    "tabs"
+    "tabs",
+    "storage",
+    "http://*/",
+    "https://*/"
   ],
+  "options_page": "options.html",
   "browser_action": {
      "default_icon": "logo.png",
      "default_popup": "recommender.html"
   },
+  "icons": {
+    "16": "logo16.png",
+    "48": "logo48.png",
+    "128": "logo128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://www.datatau.com/*",
+                  "http://news.ycombinator.com/*",
+                  "http://www.reddit.com/*"],
+      "js": ["jquery-2.1.4.min.js", "inline.js"]
+    }
+  ],
   "manifest_version": 2
 }

@@ -2,16 +2,25 @@
 <html>
   <head>
     <title>Page Recommender</title>
-    <script type="text/javascript" src="recommender.js"></script>
+    <script src="jquery-2.1.4.min.js"></script>
+    <script src="recommender.js"></script>
     <link href="recommender.css" rel="stylesheet">
   </head>
   <body>
     <div role="main" class="main">
-      <form action="http://127.0.0.1:8000/extension/add" method="POST">        
-        <input type="hidden" name="url" id="url-input" />
-        <input type="image" src="good.png" id="good-button" name="good" width="40" height="50" title="Like" class="button" />
-		    <input type="image" src="bad.png" id="bad-button" name="bad" width="40" height="50" title="Dislike" class="button" />
-      </form>
+        <div id="percent-div">
+            <h3 id="percent-val" style="text-align:center;margin:0;">Loading...</h3>
+            <div id="loading-div">
+                <img src="loading.gif" alt="Loading Bar" style="width:100%;padding-bottom:2px;" id="loading-gif">
+            </div>
+        </div>
+        <div id="form-div">
+          <form action="http://127.0.0.1:8000/extension/add" method="POST">
+            <input type="hidden" name="url" id="url-input" />
+            <input type="image" src="good.png" id="good-button" name="good" width="40" height="50" title="Like" class="button" />
+            <input type="image" src="bad.png" id="bad-button" name="bad" width="40" height="50" title="Dislike" class="button" />
+          </form>
+        </div>
     </div>
   </body>
 </html>

@@ -1,7 +1,11 @@
-window.onload= function() {
-	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-	    var url = tabs[0].url;
-	    var hiddenInput = document.getElementById('url-input');
-	    hiddenInput.value = url;
-	});	
-};
+$(document).ready(function() {
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+        var tab_url = tabs[0].url;
+        $("#url-input").val(tab_url);
+        $("#loading-div").show();
+        $.post("http://127.0.0.1:8000/extension/load", {url: tab_url},function(data) {
+            $("#percent-val").text(data);
+            $("#loading-div").hide();
+        });
+    });
+});

@@ -1,15 +1,18 @@
 .main {
-	width: 100px;
+	width: 200px;
 }
 
 #good-button {
 	float: left;
+	padding-left: 40px;
 }
 
 #bad-button {
 	float: right;
+    padding-right: 40px;
 }
 
 .button {
 	padding-bottom: 7px;
+    outline: none;
 }
